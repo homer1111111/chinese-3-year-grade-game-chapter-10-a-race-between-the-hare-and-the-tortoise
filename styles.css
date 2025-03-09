@@ -335,7 +335,6 @@ button {
     background-color: #ffffff;
     position: static;
     color: #000;
-    /* 已删除：flex: 0 0 auto; min-width: 100px; min-height: 60px; */
 }
 
 #single-word-list .pinyin {
@@ -343,20 +342,28 @@ button {
     color: #666 !important;
     margin-bottom: 5px;
     display: block;
+    visibility: visible !important;
+    opacity: 1 !important;
     font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif;
     position: relative;
     width: auto;
     height: auto;
+    min-width: 0;
+    min-height: 0;
 }
 
 #single-word-list .hanzi {
     font-size: 30px;
     color: #000 !important;
     display: block;
+    visibility: visible !important;
+    opacity: 1 !important;
     font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif;
     position: relative;
     width: auto;
     height: auto;
+    min-width: 0;
+    min-height: 0;
 }
 
 #single-word-list .word-item:hover {
@@ -591,17 +598,20 @@ div.segment.highlight {
     #single-word-list .word-item {
         padding: 3vw;
         background-color: #ffffff;
-        /* 已删除：min-width: 80px; min-height: 50px; */
     }
     #single-word-list .pinyin {
         font-size: 4.5vw;
         color: #666 !important;
         display: block;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     #single-word-list .hanzi {
         font-size: 6vw;
         color: #000 !important;
         display: block;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     #single-word-display h3 {
         font-size: 8vw;
