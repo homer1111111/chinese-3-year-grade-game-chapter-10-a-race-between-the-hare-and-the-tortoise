@@ -1,5 +1,5 @@
 body {
-    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 添加更多后备字体 */
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif;
     text-align: center;
     margin: 0;
     padding: 2vh 2vw;
@@ -332,7 +332,7 @@ button {
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #ffffff; /* 调整背景色为白色，确保对比度 */
     position: static;
     color: #000;
     flex: 0 0 auto;
@@ -342,17 +342,19 @@ button {
 
 #single-word-list .pinyin {
     font-size: 20px;
-    color: #666;
+    color: #666 !important; /* 强制颜色 */
     margin-bottom: 5px;
-    display: inline-block;
-    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 确保字体 */
+    display: block; /* 确保显示 */
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif;
+    line-height: 1; /* 防止行高导致偏移 */
 }
 
 #single-word-list .hanzi {
     font-size: 30px;
-    display: inline-block;
-    color: #000 !important; /* 强制颜色，确保可见 */
-    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 确保字体 */
+    color: #000 !important; /* 强制颜色 */
+    display: block; /* 确保显示 */
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif;
+    line-height: 1; /* 防止行高导致偏移 */
 }
 
 #single-word-list .word-item:hover {
@@ -588,13 +590,17 @@ div.segment.highlight {
         padding: 3vw;
         min-width: 80px;
         min-height: 50px;
+        background-color: #ffffff; /* 确保对比度 */
     }
     #single-word-list .pinyin {
         font-size: 4.5vw;
+        color: #666 !important;
+        display: block;
     }
     #single-word-list .hanzi {
         font-size: 6vw;
-        color: #000 !important; /* 强制颜色 */
+        color: #000 !important;
+        display: block;
     }
     #single-word-display h3 {
         font-size: 8vw;
