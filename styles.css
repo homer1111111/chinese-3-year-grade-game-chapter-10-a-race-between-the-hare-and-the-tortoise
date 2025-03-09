@@ -339,7 +339,7 @@ button {
 #single-word-list .pinyin {
     font-size: 20px;
     color: #666 !important;
-    margin-bottom: 1.5vw;
+    margin-bottom: 1.0vw;
     display: block;
     visibility: visible !important;
     opacity: 1 !important;
@@ -601,7 +601,7 @@ div.segment.highlight {
     #single-word-list .pinyin {
         font-size: 4.5vw;
         color: #666 !important;
-        margin-bottom: 1.5vw;
+        margin-bottom: 1.0vw;
         display: block;
         visibility: visible !important;
         opacity: 1 !important;
