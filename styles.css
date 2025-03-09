@@ -334,7 +334,6 @@ button {
     background-color: #ffffff;
     position: static;
     color: #000;
-    /* 已删除：align-items: center; */
 }
 
 #single-word-list .pinyin {
@@ -458,7 +457,9 @@ button {
     margin-right: 8px;
     margin-bottom: 0;
     width: 48px;
-    height: 96px;
+    height: 120px; /* 增加高度以避免重叠 */
+    min-height: 80px; /* 确保最小高度 */
+    max-height: 150px; /* 防止过高 */
     position: relative;
     text-align: center;
 }
@@ -467,7 +468,7 @@ button {
     font-size: 32px;
     line-height: 1;
     position: absolute;
-    top: 0;
+    top: 5px; /* 调整顶部间距 */
     left: 50%;
     transform: translateX(-50%);
 }
@@ -476,7 +477,7 @@ button {
     font-size: 48px;
     line-height: 1;
     position: absolute;
-    bottom: 0;
+    bottom: 5px; /* 调整底部间距 */
     left: 50%;
     transform: translateX(-50%);
 }
@@ -646,7 +647,9 @@ div.segment.highlight {
         margin-right: 2vw;
         margin-bottom: 0;
         width: 10vw;
-        height: 21vw;
+        height: 30vw; /* 增加高度以避免重叠 */
+        min-height: 20vw; /* 确保最小高度 */
+        max-height: 40vw; /* 防止过高 */
         position: relative;
         text-align: center;
     }
@@ -654,7 +657,7 @@ div.segment.highlight {
         font-size: 7vw;
         line-height: 1;
         position: absolute;
-        top: 0;
+        top: 5px; /* 调整顶部间距 */
         left: 50%;
         transform: translateX(-50%);
     }
@@ -662,7 +665,7 @@ div.segment.highlight {
         font-size: 10vw;
         line-height: 1;
         position: absolute;
-        bottom: 0;
+        bottom: 5px; /* 调整底部间距 */
         left: 50%;
         transform: translateX(-50%);
     }
