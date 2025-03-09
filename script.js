@@ -12,7 +12,7 @@ let practiceIndex = 0;
 let practiceWords = [];
 let singleHanziWriter = null;
 let isFlipped = false;
-let isAudioPlaying = false; // 标志位，标记音频是否正在播放
+let isAudioPlaying = false;
 
 const modeSelection = document.querySelector('#mode-selection.persistent');
 const currentScoreDisplay = document.getElementById('current-score');
@@ -157,12 +157,12 @@ function shuffle(array) {
 // 课文模式
 function startArticleMode() {
     console.log('Starting Article Mode');
-    // 清除其他模式的内容
     practiceMode.style.display = 'none';
     gameMode.style.display = 'none';
     singleWordMode.style.display = 'none';
     articleMode.style.display = 'block';
     readingMode.style.display = 'block';
+    articleContent.innerHTML = ''; // 清除残留内容
     showArticleContent();
 }
 
@@ -179,7 +179,7 @@ function playFullArticle() {
                 if (isAudioPlaying) {
                     document.addEventListener('click', stopAudioOnClick);
                 }
-            }, 500); // 延迟 500ms 绑定监听器
+            }, 500);
         })
         .catch(error => {
             console.error('Full audio play failed:', error);
@@ -194,14 +194,12 @@ function playSegment(articleId) {
         return;
     }
 
-    // 同步停止全篇音频
     if (!fullAudio.paused) {
         fullAudio.pause();
         fullAudio.currentTime = 0;
         console.log('Full article audio stopped for segment play');
     }
 
-    // 移除现有的全局点击监听器
     document.removeEventListener('click', stopAudioOnClick);
 
     if (currentHighlightedSegment) {
@@ -212,7 +210,7 @@ function playSegment(articleId) {
     currentHighlightedSegment = newHighlightedSegment;
 
     segmentAudio.src = segment.audio;
-    segmentAudio.load(); // 确保音频加载
+    segmentAudio.load();
     segmentAudio.play()
         .then(() => {
             console.log('Segment audio playing successfully');
@@ -221,13 +219,13 @@ function playSegment(articleId) {
                 if (isAudioPlaying) {
                     document.addEventListener('click', stopAudioOnClick);
                 }
-            }, 500); // 延迟 500ms 绑定监听器
+            }, 500);
         })
         .catch(error => {
             console.error('Segment audio play failed:', error);
             if (error.message.includes('interrupted by a call to pause')) {
                 console.warn('Playback interrupted, retrying...');
-                segmentAudio.play(); // 尝试再次播放
+                segmentAudio.play();
             } else {
                 alert('无法播放分段音频，请检查音频文件或网络连接。\nError: ' + error.message);
             }
@@ -235,7 +233,6 @@ function playSegment(articleId) {
 }
 
 function stopAudioOnClick(event) {
-    // 排除 #play-article 按钮和 .segment 元素
     if (!event.target.closest('#play-article') && !event.target.closest('.segment')) {
         fullAudio.pause();
         fullAudio.currentTime = 0;
@@ -315,7 +312,7 @@ function exitArticleMode() {
     document.removeEventListener('click', stopAudioOnClick);
     articleMode.style.display = 'none';
     readingMode.style.display = 'none';
-    articleContent.innerHTML = ''; // 清除课文内容
+    articleContent.innerHTML = '';
 }
 
 // 单字模式
@@ -329,7 +326,12 @@ function startSingleWordMode() {
     wordAudio.pause();
     wordAudio.currentTime = 0;
     practiceMode.style.display = 'none';
+    flashcardHanzi.textContent = ''; // 清除练习模式内容
+    flashcardPinyin.textContent = '';
+    flashcardMeaning.innerHTML = '';
     gameMode.style.display = 'none';
+    hanziContainer.innerHTML = ''; // 清除游戏模式内容
+    pinyinContainer.innerHTML = '';
     articleMode.style.display = 'none';
     singleWordMode.style.display = 'block';
     showSingleWordList();
@@ -388,7 +390,7 @@ function showSingleWordList() {
 
             if (clickCount === 2) {
                 event.currentTarget.removeEventListener('click', handleWordClick);
-                console.log(`移除全局点击监听器 for ${hanzi}`);
+                console.log(`Removed click listener for ${hanzi}`);
             }
         }
     };
@@ -404,6 +406,7 @@ function exitSingleWordMode() {
     wordAudio.pause();
     wordAudio.currentTime = 0;
     singleWordMode.style.display = 'none';
+    singleWordList.innerHTML = ''; // 清除单字模式内容
 }
 
 // 练习模式
@@ -418,9 +421,12 @@ function startPracticeMode() {
     wordAudio.currentTime = 0;
     practiceIndex = 0;
     practiceWords = shuffle([...allUniqueWords]);
-    gameMode.style.display = 'none';
-    articleMode.style.display = 'none';
     singleWordMode.style.display = 'none';
+    singleWordList.innerHTML = ''; // 清除单字模式内容
+    gameMode.style.display = 'none';
+    hanziContainer.innerHTML = ''; // 清除游戏模式内容
+    pinyinContainer.innerHTML = '';
+    articleMode.style.display = 'none';
     practiceMode.style.display = 'block';
     showPracticeWord();
 }
@@ -443,7 +449,7 @@ function showPracticeWord() {
             wordAudio.play().catch(error => console.error('Word audio play failed:', error));
             if (clickCount === 2) {
                 playButton.removeEventListener('click', handlePlayClick);
-                console.log(`移除全局点击监听器 for ${word.hanzi} audio`);
+                console.log(`Removed click listener for ${word.hanzi} audio`);
             }
         } else {
             console.error('Word audio source not set');
@@ -471,6 +477,9 @@ function exitPracticeMode() {
     wordAudio.pause();
     wordAudio.currentTime = 0;
     practiceMode.style.display = 'none';
+    flashcardHanzi.textContent = '';
+    flashcardPinyin.textContent = '';
+    flashcardMeaning.innerHTML = ''; // 清除练习模式内容
 }
 
 // 游戏模式
@@ -483,15 +492,21 @@ function startGameMode() {
     document.removeEventListener('click', stopAudioOnClick);
     wordAudio.pause();
     wordAudio.currentTime = 0;
-    practiceMode.style.display = 'none';
-    articleMode.style.display = 'none';
     singleWordMode.style.display = 'none';
+    singleWordList.innerHTML = ''; // 清除单字模式内容
+    practiceMode.style.display = 'none';
+    flashcardHanzi.textContent = '';
+    flashcardPinyin.textContent = '';
+    flashcardMeaning.innerHTML = ''; // 清除练习模式内容
+    articleMode.style.display = 'none';
     gameMode.style.display = 'block';
     setLevel(currentLevel, currentSubLevel);
 }
 
 function exitGameMode() {
     gameMode.style.display = 'none';
+    hanziContainer.innerHTML = '';
+    pinyinContainer.innerHTML = ''; // 清除游戏模式内容
 }
 
 function updateScoreDisplay() {
@@ -786,34 +801,36 @@ function handleLevelComplete() {
     }
 }
 
-// 绑定模式选择按钮事件
 document.addEventListener('DOMContentLoaded', function() {
-    // 默认隐藏所有模式，只显示模式选择
     practiceMode.style.display = 'none';
     gameMode.style.display = 'none';
     singleWordMode.style.display = 'none';
     articleMode.style.display = 'none';
     readingMode.style.display = 'none';
 
-    // 绑定按钮点击事件（假设按钮顺序为：课文、练习、游戏、单字）
     const buttons = modeSelection.querySelectorAll('button');
-    buttons.forEach((button, index) => {
-        switch (index) {
-            case 0: // 课文模式
+    buttons.forEach(button => {
+        switch (button.textContent.trim()) {
+            case '课文模式' || 'Article Mode':
                 button.addEventListener('click', startArticleMode);
+                console.log('Bound Article Mode to button:', button.textContent);
                 break;
-            case 1: // 练习模式
+            case '练习模式' || 'Practice Mode':
                 button.addEventListener('click', startPracticeMode);
+                console.log('Bound Practice Mode to button:', button.textContent);
                 break;
-            case 2: // 游戏模式
+            case '游戏模式' || 'Game Mode':
                 button.addEventListener('click', startGameMode);
+                console.log('Bound Game Mode to button:', button.textContent);
                 break;
-            case 3: // 单字模式
+            case '单字模式' || 'Single Word Mode':
                 button.addEventListener('click', startSingleWordMode);
+                console.log('Bound Single Word Mode to button:', button.textContent);
                 break;
+            default:
+                console.warn('Unrecognized button text:', button.textContent);
         }
     });
 
-    // 初始化单字模式列表（仅生成 DOM，不显示）
-    showSingleWordList();
+    showSingleWordList(); // 初始化单字模式列表（仅生成 DOM，不显示）
 });
