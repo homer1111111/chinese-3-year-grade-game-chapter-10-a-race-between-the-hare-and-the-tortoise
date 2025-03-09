@@ -165,25 +165,28 @@ function startArticleMode() {
 }
 
 function playFullArticle() {
-    if (fullAudio.paused) {
-        console.log('Attempting to play full article audio...');
-        fullAudio.src = 'audio/full_article.mp3';
-        fullAudio.load();
-        console.log('Full audio source set to:', fullAudio.src);
-        fullAudio.play()
-            .then(() => {
-                console.log('Full article audio playing successfully');
-                document.getElementById('play-article').textContent = '暂停课文 (Pause)';
-            })
-            .catch(error => {
-                console.error('Full audio play failed:', error);
-                alert('无法播放课文音频，请检查浏览器权限设置。\nError: ' + error.message);
-            });
-    } else {
+    console.log('Attempting to play full article audio...');
+    fullAudio.src = 'audio/full_article.mp3';
+    fullAudio.load();
+    console.log('Full audio source set to:', fullAudio.src);
+    fullAudio.play()
+        .then(() => {
+            console.log('Full article audio playing successfully');
+            document.addEventListener('click', stopFullAudioOnClick);
+        })
+        .catch(error => {
+            console.error('Full audio play failed:', error);
+            alert('无法播放课文音频，请检查浏览器权限设置。\nError: ' + error.message);
+        });
+}
+
+function stopFullAudioOnClick(event) {
+    if (!event.target.closest('#reading-mode button:first-of-type')) {
         fullAudio.pause();
-        fullAudio.currentTime = 0; // 立即停止并重置
+        fullAudio.currentTime = 0;
         console.log('Full article audio stopped');
-        document.getElementById('play-article').textContent = '播放课文 (Play)';
+        document.removeEventListener('click', stopFullAudioOnClick);
+        console.log('Removed global click listener for full audio');
     }
 }
 
@@ -269,6 +272,7 @@ function playSegment(articleId) {
 function exitArticleMode() {
     fullAudio.pause();
     fullAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     articleMode.style.display = 'none';
     readingMode.style.display = 'none';
 }
@@ -279,6 +283,7 @@ function startSingleWordMode() {
     fullAudio.currentTime = 0;
     wordAudio.pause();
     wordAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     practiceMode.style.display = 'none';
     gameMode.style.display = 'none';
     articleMode.style.display = 'none';
@@ -358,18 +363,20 @@ function exitSingleWordMode() {
 }
 
 // 练习模式
+// 练习模式
 function startPracticeMode() {
     fullAudio.pause();
     fullAudio.currentTime = 0;
     wordAudio.pause();
     wordAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     practiceIndex = 0;
     practiceWords = shuffle([...allUniqueWords]);
     gameMode.style.display = 'none';
     articleMode.style.display = 'none';
     singleWordMode.style.display = 'none';
     practiceMode.style.display = 'block';
-    showPracticeWord();
+    showPracticeWord(); // 初始显示第一个汉字
     console.log('Practice Mode started');
 }
 
@@ -427,6 +434,7 @@ function startGameMode() {
     fullAudio.currentTime = 0;
     wordAudio.pause();
     wordAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     practiceMode.style.display = 'none';
     articleMode.style.display = 'none';
     singleWordMode.style.display = 'none';
@@ -729,8 +737,3 @@ function handleLevelComplete() {
         setTimeout(() => setLevel(nextLevel, nextSubLevel), 1000);
     }
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    startArticleMode();
-    showSingleWordList();
-});
