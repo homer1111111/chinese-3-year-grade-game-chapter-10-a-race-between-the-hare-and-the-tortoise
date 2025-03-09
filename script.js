@@ -13,7 +13,7 @@ let practiceWords = [];
 let singleHanziWriter = null;
 let isFlipped = false;
 
-const modeSelection = document.getElementById('mode-selection');
+const modeSelection = document.querySelector('#mode-selection.persistent');
 const currentScoreDisplay = document.getElementById('current-score');
 const totalScoreDisplay = document.getElementById('total-score');
 const levelDisplay = document.getElementById('level');
@@ -45,76 +45,104 @@ const singleAnimationGif = document.getElementById('single-animation-gif');
 const singleAnimationFallback = document.getElementById('single-animation-fallback');
 const singleAnimation = document.getElementById('single-animation');
 const articleMode = document.getElementById('article-mode');
+const readingMode = document.getElementById('reading-mode');
 const articleContent = document.getElementById('article-content');
+const fullAudio = document.getElementById('full-audio');
+const segmentAudio = document.getElementById('segment-audio');
 const celebrateSound = document.getElementById('celebrate-sound');
+const wordAudio = document.getElementById('word-audio');
+let currentHighlightedSegment = null;
 
 highestScoreDisplay.textContent = `历史最高分数: ${highestScore} (Highest Score: ${highestScore})`;
 
+const articleSegments = [
+    { text: '兔子和乌龟要赛跑了。', audio: 'audio/segment_1.mp3', articleId: 'article_1' },
+    { text: '小鸟一叫: ', audio: 'audio/segment_2.mp3', articleId: 'article_2' },
+    { text: '"一二三!"', audio: 'audio/segment_3.mp3', articleId: 'article_3' },
+    { text: '兔子就飞快地跑了出去。', audio: 'audio/segment_4.mp3', articleId: 'article_4' },
+    { text: '乌龟一步一步地向前爬。', audio: 'audio/segment_5.mp3', articleId: 'article_5' },
+    { text: '兔子跑了一会儿，', audio: 'audio/segment_6.mp3', articleId: 'article_6' },
+    { text: '回头看不见乌龟，', audio: 'audio/segment_7.mp3', articleId: 'article_7' },
+    { text: '他很得意，', audio: 'audio/segment_8.mp3', articleId: 'article_8' },
+    { text: '就想: ', audio: 'audio/segment_9.mp3', articleId: 'article_9' },
+    { text: '"乌龟爬得真慢，', audio: 'audio/segment_10.mp3', articleId: 'article_10' },
+    { text: '我睡一觉，', audio: 'audio/segment_11.mp3', articleId: 'article_11' },
+    { text: '等他追上来我再跑，', audio: 'audio/segment_12.mp3', articleId: 'article_12' },
+    { text: '我仍然可以得第一。"', audio: 'audio/segment_13.mp3', articleId: 'article_13' },
+    { text: '这样一想，', audio: 'audio/segment_14.mp3', articleId: 'article_14' },
+    { text: '兔子就睡起觉来了。', audio: 'audio/segment_15.mp3', articleId: 'article_15' },
+    { text: '乌龟在后面不停地向前爬，', audio: 'audio/segment_16.mp3', articleId: 'article_16' },
+    { text: '从兔子身边爬了过去，', audio: 'audio/segment_17.mp3', articleId: 'article_17' },
+    { text: '一直爬到终点，', audio: 'audio/segment_18.mp3', articleId: 'article_18' },
+    { text: '得了第一名，', audio: 'audio/segment_19.mp3', articleId: 'article_19' },
+    { text: '可兔子还在那儿睡大觉呢!', audio: 'audio/segment_20.mp3', articleId: 'article_20' }
+];
+
 const allWords = {
     'level-1-1': [
-        { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif' },
-        { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif' },
-        { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif' }
+        { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif', audio: 'audio/words/龟.mp3' },
+        { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif', audio: 'audio/words/赛.mp3' },
+        { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif', audio: 'audio/words/乌.mp3' }
     ],
     'level-1-2': [
-        { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif' },
-        { hanzi: '爬', pinyin: 'pá', meaningCn: '爬行', meaningEn: 'to crawl', strokeCount: 8, animation: 'https://bishun.gjcha.com/722C.gif' },
-        { hanzi: '回', pinyin: 'huí', meaningCn: '返回', meaningEn: 'to return', strokeCount: 6, animation: 'https://bishun.gjcha.com/56DE.gif' }
+        { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif', audio: 'audio/words/步.mp3' },
+        { hanzi: '爬', pinyin: 'pá', meaningCn: '爬行', meaningEn: 'to crawl', strokeCount: 8, animation: 'https://bishun.gjcha.com/722C.gif', audio: 'audio/words/爬.mp3' },
+        { hanzi: '回', pinyin: 'huí', meaningCn: '返回', meaningEn: 'to return', strokeCount: 6, animation: 'https://bishun.gjcha.com/56DE.gif', audio: 'audio/words/回.mp3' }
     ],
     'level-1-3': [
-        { hanzi: '得', pinyin: 'dé', meaningCn: '获得', meaningEn: 'to get', strokeCount: 11, animation: 'https://bishun.gjcha.com/5F97.gif' },
-        { hanzi: '意', pinyin: 'yì', meaningCn: '意思', meaningEn: 'meaning, intention', strokeCount: 13, animation: 'https://bishun.gjcha.com/610F.gif' }
+        { hanzi: '得', pinyin: 'dé', meaningCn: '获得', meaningEn: 'to get', strokeCount: 11, animation: 'https://bishun.gjcha.com/5F97.gif', audio: 'audio/words/得.mp3' },
+        { hanzi: '意', pinyin: 'yì', meaningCn: '意思', meaningEn: 'meaning, intention', strokeCount: 13, animation: 'https://bishun.gjcha.com/610F.gif', audio: 'audio/words/意.mp3' }
     ],
     'level-2-1': [
-        { hanzi: '慢', pinyin: 'màn', meaningCn: '缓慢', meaningEn: 'slow', strokeCount: 14, animation: 'https://bishun.gjcha.com/6162.gif' },
-        { hanzi: '追', pinyin: 'zhuī', meaningCn: '追赶', meaningEn: 'to chase', strokeCount: 12, animation: 'https://bishun.gjcha.com/8FFD.gif' },
-        { hanzi: '仍', pinyin: 'réng', meaningCn: '仍然', meaningEn: 'still', strokeCount: 4, animation: 'https://bishun.gjcha.com/4ECD.gif' }
+        { hanzi: '慢', pinyin: 'màn', meaningCn: '缓慢', meaningEn: 'slow', strokeCount: 14, animation: 'https://bishun.gjcha.com/6162.gif', audio: 'audio/words/慢.mp3' },
+        { hanzi: '追', pinyin: 'zhuī', meaningCn: '追赶', meaningEn: 'to chase', strokeCount: 12, animation: 'https://bishun.gjcha.com/8FFD.gif', audio: 'audio/words/追.mp3' },
+        { hanzi: '仍', pinyin: 'réng', meaningCn: '仍然', meaningEn: 'still', strokeCount: 4, animation: 'https://bishun.gjcha.com/4ECD.gif', audio: 'audio/words/仍.mp3' }
     ],
     'level-2-2': [
-        { hanzi: '然', pinyin: 'rán', meaningCn: '这样', meaningEn: 'thus, so', strokeCount: 12, animation: 'https://bishun.gjcha.com/7136.gif' },
-        { hanzi: '第', pinyin: 'dì', meaningCn: '次序', meaningEn: 'ordinal number (e.g., first)', strokeCount: 11, animation: 'https://bishun.gjcha.com/7B2C.gif' }
+        { hanzi: '然', pinyin: 'rán', meaningCn: '这样', meaningEn: 'thus, so', strokeCount: 12, animation: 'https://bishun.gjcha.com/7136.gif', audio: 'audio/words/然.mp3' },
+        { hanzi: '第', pinyin: 'dì', meaningCn: '次序', meaningEn: 'ordinal number (e.g., first)', strokeCount: 11, animation: 'https://bishun.gjcha.com/7B2C.gif', audio: 'audio/words/第.mp3' }
     ],
     'level-2-3': [
-        { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif' },
-        { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif' }
+        { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif', audio: 'audio/words/龟.mp3' },
+        { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif', audio: 'audio/words/赛.mp3' }
     ],
     'level-3-1': [
-        { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif' },
-        { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif' },
-        { hanzi: '爬', pinyin: 'pá', meaningCn: '爬行', meaningEn: 'to crawl', strokeCount: 8, animation: 'https://bishun.gjcha.com/722C.gif' },
-        { hanzi: '回', pinyin: 'huí', meaningCn: '返回', meaningEn: 'to return', strokeCount: 6, animation: 'https://bishun.gjcha.com/56DE.gif' },
-        { hanzi: '得', pinyin: 'dé', meaningCn: '获得', meaningEn: 'to get', strokeCount: 11, animation: 'https://bishun.gjcha.com/5F97.gif' }
+        { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif', audio: 'audio/words/乌.mp3' },
+        { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif', audio: 'audio/words/步.mp3' },
+        { hanzi: '爬', pinyin: 'pá', meaningCn: '爬行', meaningEn: 'to crawl', strokeCount: 8, animation: 'https://bishun.gjcha.com/722C.gif', audio: 'audio/words/爬.mp3' },
+        { hanzi: '回', pinyin: 'huí', meaningCn: '返回', meaningEn: 'to return', strokeCount: 6, animation: 'https://bishun.gjcha.com/56DE.gif', audio: 'audio/words/回.mp3' },
+        { hanzi: '得', pinyin: 'dé', meaningCn: '获得', meaningEn: 'to get', strokeCount: 11, animation: 'https://bishun.gjcha.com/5F97.gif', audio: 'audio/words/得.mp3' }
     ],
     'level-3-2': [
-        { hanzi: '意', pinyin: 'yì', meaningCn: '意思', meaningEn: 'meaning, intention', strokeCount: 13, animation: 'https://bishun.gjcha.com/610F.gif' },
-        { hanzi: '慢', pinyin: 'màn', meaningCn: '缓慢', meaningEn: 'slow', strokeCount: 14, animation: 'https://bishun.gjcha.com/6162.gif' },
-        { hanzi: '追', pinyin: 'zhuī', meaningCn: '追赶', meaningEn: 'to chase', strokeCount: 12, animation: 'https://bishun.gjcha.com/8FFD.gif' },
-        { hanzi: '仍', pinyin: 'réng', meaningCn: '仍然', meaningEn: 'still', strokeCount: 4, animation: 'https://bishun.gjcha.com/4ECD.gif' },
-        { hanzi: '然', pinyin: 'rán', meaningCn: '这样', meaningEn: 'thus, so', strokeCount: 12, animation: 'https://bishun.gjcha.com/7136.gif' }
+        { hanzi: '意', pinyin: 'yì', meaningCn: '意思', meaningEn: 'meaning, intention', strokeCount: 13, animation: 'https://bishun.gjcha.com/610F.gif', audio: 'audio/words/意.mp3' },
+        { hanzi: '慢', pinyin: 'màn', meaningCn: '缓慢', meaningEn: 'slow', strokeCount: 14, animation: 'https://bishun.gjcha.com/6162.gif', audio: 'audio/words/慢.mp3' },
+        { hanzi: '追', pinyin: 'zhuī', meaningCn: '追赶', meaningEn: 'to chase', strokeCount: 12, animation: 'https://bishun.gjcha.com/8FFD.gif', audio: 'audio/words/追.mp3' },
+        { hanzi: '仍', pinyin: 'réng', meaningCn: '仍然', meaningEn: 'still', strokeCount: 4, animation: 'https://bishun.gjcha.com/4ECD.gif', audio: 'audio/words/仍.mp3' },
+        { hanzi: '然', pinyin: 'rán', meaningCn: '这样', meaningEn: 'thus, so', strokeCount: 12, animation: 'https://bishun.gjcha.com/7136.gif', audio: 'audio/words/然.mp3' }
     ],
     'level-3-3': [
-        { hanzi: '第', pinyin: 'dì', meaningCn: '次序', meaningEn: 'ordinal number (e.g., first)', strokeCount: 11, animation: 'https://bishun.gjcha.com/7B2C.gif' },
-        { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif' },
-        { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif' },
-        { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif' },
-        { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif' }
+        { hanzi: '第', pinyin: 'dì', meaningCn: '次序', meaningEn: 'ordinal number (e.g., first)', strokeCount: 11, animation: 'https://bishun.gjcha.com/7B2C.gif', audio: 'audio/words/第.mp3' },
+        { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif', audio: 'audio/words/龟.mp3' },
+        { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif', audio: 'audio/words/赛.mp3' },
+        { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif', audio: 'audio/words/乌.mp3' },
+        { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif', audio: 'audio/words/步.mp3' }
     ]
 };
 
 const allUniqueWords = [
-    { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif' },
-    { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif' },
-    { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif' },
-    { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif' },
-    { hanzi: '爬', pinyin: 'pá', meaningCn: '爬行', meaningEn: 'to crawl', strokeCount: 8, animation: 'https://bishun.gjcha.com/722C.gif' },
-    { hanzi: '回', pinyin: 'huí', meaningCn: '返回', meaningEn: 'to return', strokeCount: 6, animation: 'https://bishun.gjcha.com/56DE.gif' },
-    { hanzi: '得', pinyin: 'dé', meaningCn: '获得', meaningEn: 'to get', strokeCount: 11, animation: 'https://bishun.gjcha.com/5F97.gif' },
-    { hanzi: '意', pinyin: 'yì', meaningCn: '意思', meaningEn: 'meaning, intention', strokeCount: 13, animation: 'https://bishun.gjcha.com/610F.gif' },
-    { hanzi: '慢', pinyin: 'màn', meaningCn: '缓慢', meaningEn: 'slow', strokeCount: 14, animation: 'https://bishun.gjcha.com/6162.gif' },
-    { hanzi: '追', pinyin: 'zhuī', meaningCn: '追赶', meaningEn: 'to chase', strokeCount: 12, animation: 'https://bishun.gjcha.com/8FFD.gif' },
-    { hanzi: '仍', pinyin: 'réng', meaningCn: '仍然', meaningEn: 'still', strokeCount: 4, animation: 'https://bishun.gjcha.com/4ECD.gif' },
-    { hanzi: '然', pinyin: 'rán', meaningCn: '这样', meaningEn: 'thus, so', strokeCount: 12, animation: 'https://bishun.gjcha.com/7136.gif' },
-    { hanzi: '第', pinyin: 'dì', meaningCn: '次序', meaningEn: 'ordinal number (e.g., first)', strokeCount: 11, animation: 'https://bishun.gjcha.com/7B2C.gif' }
+    { hanzi: '龟', pinyin: 'guī', meaningCn: '乌龟', meaningEn: 'turtle', strokeCount: 7, animation: 'https://bishun.gjcha.com/9F9F.gif', audio: 'audio/words/龟.mp3' },
+    { hanzi: '赛', pinyin: 'sài', meaningCn: '比赛', meaningEn: 'race, competition', strokeCount: 14, animation: 'https://bishun.gjcha.com/8D5B.gif', audio: 'audio/words/赛.mp3' },
+    { hanzi: '乌', pinyin: 'wū', meaningCn: '乌鸦', meaningEn: 'crow', strokeCount: 4, animation: 'https://bishun.gjcha.com/4E4C.gif', audio: 'audio/words/乌.mp3' },
+    { hanzi: '步', pinyin: 'bù', meaningCn: '步伐', meaningEn: 'step', strokeCount: 7, animation: 'https://bishun.gjcha.com/6B65.gif', audio: 'audio/words/步.mp3' },
+    { hanzi: '爬', pinyin: 'pá', meaningCn: '爬行', meaningEn: 'to crawl', strokeCount: 8, animation: 'https://bishun.gjcha.com/722C.gif', audio: 'audio/words/爬.mp3' },
+    { hanzi: '回', pinyin: 'huí', meaningCn: '返回', meaningEn: 'to return', strokeCount: 6, animation: 'https://bishun.gjcha.com/56DE.gif', audio: 'audio/words/回.mp3' },
+    { hanzi: '得', pinyin: 'dé', meaningCn: '获得', meaningEn: 'to get', strokeCount: 11, animation: 'https://bishun.gjcha.com/5F97.gif', audio: 'audio/words/得.mp3' },
+    { hanzi: '意', pinyin: 'yì', meaningCn: '意思', meaningEn: 'meaning, intention', strokeCount: 13, animation: 'https://bishun.gjcha.com/610F.gif', audio: 'audio/words/意.mp3' },
+    { hanzi: '慢', pinyin: 'màn', meaningCn: '缓慢', meaningEn: 'slow', strokeCount: 14, animation: 'https://bishun.gjcha.com/6162.gif', audio: 'audio/words/慢.mp3' },
+    { hanzi: '追', pinyin: 'zhuī', meaningCn: '追赶', meaningEn: 'to chase', strokeCount: 12, animation: 'https://bishun.gjcha.com/8FFD.gif', audio: 'audio/words/追.mp3' },
+    { hanzi: '仍', pinyin: 'réng', meaningCn: '仍然', meaningEn: 'still', strokeCount: 4, animation: 'https://bishun.gjcha.com/4ECD.gif', audio: 'audio/words/仍.mp3' },
+    { hanzi: '然', pinyin: 'rán', meaningCn: '这样', meaningEn: 'thus, so', strokeCount: 12, animation: 'https://bishun.gjcha.com/7136.gif', audio: 'audio/words/然.mp3' },
+    { hanzi: '第', pinyin: 'dì', meaningCn: '次序', meaningEn: 'ordinal number (e.g., first)', strokeCount: 11, animation: 'https://bishun.gjcha.com/7B2C.gif', audio: 'audio/words/第.mp3' }
 ];
 
 function shuffle(array) {
@@ -125,17 +153,44 @@ function shuffle(array) {
     return array;
 }
 
+// 课文模式
 function startArticleMode() {
-    modeSelection.style.display = 'flex';
     practiceMode.style.display = 'none';
     gameMode.style.display = 'none';
     singleWordMode.style.display = 'none';
     articleMode.style.display = 'block';
+    readingMode.style.display = 'block';
     showArticleContent();
+    console.log('Article Mode started');
+}
+
+function playFullArticle() {
+    console.log('Attempting to play full article audio...');
+    fullAudio.src = 'audio/full_article.mp3';
+    fullAudio.load();
+    console.log('Full audio source set to:', fullAudio.src);
+    fullAudio.play()
+        .then(() => {
+            console.log('Full article audio playing successfully');
+            document.addEventListener('click', stopFullAudioOnClick);
+        })
+        .catch(error => {
+            console.error('Full audio play failed:', error);
+            alert('无法播放课文音频，请检查浏览器权限设置。\nError: ' + error.message);
+        });
+}
+
+function stopFullAudioOnClick(event) {
+    if (!event.target.closest('#reading-mode button:first-of-type')) {
+        fullAudio.pause();
+        fullAudio.currentTime = 0;
+        console.log('Full article audio stopped');
+        document.removeEventListener('click', stopFullAudioOnClick);
+        console.log('Removed global click listener for full audio');
+    }
 }
 
 function showArticleContent() {
-    let text = '兔子和乌龟要赛跑了。小鸟一叫: "一二三!" 兔子就飞快地跑了出去。乌龟一步一步地向前爬。兔子跑了一会儿，回头看不见乌龟，他很得意，就想: "乌龟爬得真慢，我睡一觉，等他追上来我再跑，我仍然可以得第一。"这样一想，兔子就睡起觉来了。乌龟在后面不停地向前爬，从兔子身边爬了过去，一直爬到终点，得了第一名，可兔子还在那儿睡大觉呢!';
     const pinyinMap = {
         '兔': 'tù', '子': 'zǐ', '和': 'hé', '乌': 'wū', '龟': 'guī', '要': 'yào', '赛': 'sài', '跑': 'pǎo', '了': 'le',
         '小': 'xiǎo', '鸟': 'niǎo', '一': 'yī', '叫': 'jiào', '二': 'èr', '三': 'sān', '就': 'jiù', '飞': 'fēi', '快': 'kuài',
@@ -147,53 +202,99 @@ function showArticleContent() {
         '身': 'shēn', '过': 'guò', '直': 'zhí', '到': 'dào', '终': 'zhōng', '点': 'diǎn', '呢': 'ne', '那': 'nà', '还': 'hái',
         '大': 'dà', '会': 'huì'
     };
-    const isChineseChar = char => /[\u4E00-\u9FFF]/.test(char);
-    const chars = text.split('');
-    let result = '';
-    let lineCount = 0;
 
-    for (let i = 0; i < chars.length; i++) {
-        if (chars[i] === '会' && chars[i + 1] === '儿') {
-            result += `<span class="word-wrapper"><span class="word-item"><span class="pinyin">huìr</span><span class="hanzi">会儿</span></span></span>`;
-            i++;
-        }
-        else if (chars[i] === '那' && chars[i + 1] === '儿') {
-            result += `<span class="word-wrapper"><span class="word-item"><span class="pinyin">nàr</span><span class="hanzi">那儿</span></span></span>`;
-            i++;
-        }
-        else if (isChineseChar(chars[i])) {
-            const pinyin = pinyinMap[chars[i]] || '未知 (unknown)';
-            result += `<span class="word-wrapper"><span class="word-item"><span class="pinyin">${pinyin}</span><span class="hanzi">${chars[i]}</span></span></span>`;
-        } else {
-            result += `<span class="word-wrapper"><span class="non-hanzi">${chars[i]}</span></span>`;
-        }
-        if (window.innerWidth > 600) {
-            lineCount++;
-            if (lineCount === 17 && i < chars.length - 1) {
-                result += '<br>';
-                lineCount = 0;
+    // 定义标点符号集合
+    const punctuation = [',', '。', ':', '!', '"', '“', '”', ' ', '，'];
+
+    let result = '';
+    articleSegments.forEach(segment => {
+        const chars = segment.text.split('');
+        let pinyinLine = '';
+        let hanziLine = '';
+
+        for (let i = 0; i < chars.length; i++) {
+            if (chars[i] === '会' && chars[i + 1] === '儿') {
+                pinyinLine += `<span class="char-pair"><span class="pinyin">huìr</span><span class="hanzi">会儿</span></span> `;
+                hanziLine += '会儿';
+                i++;
+            } else if (chars[i] === '那' && chars[i + 1] === '儿') {
+                pinyinLine += `<span class="char-pair"><span class="pinyin">nàr</span><span class="hanzi">那儿</span></span> `;
+                hanziLine += '那儿';
+                i++;
+            } else if (punctuation.includes(chars[i])) {
+                // 如果是标点符号，只添加到汉字行，不生成拼音
+                pinyinLine += `<span class="char-pair"><span class="pinyin"></span><span class="hanzi">${chars[i]}</span></span> `;
+                hanziLine += chars[i];
+            } else {
+                const pinyin = pinyinMap[chars[i]] || chars[i];
+                pinyinLine += `<span class="char-pair"><span class="pinyin">${pinyin}</span><span class="hanzi">${chars[i]}</span></span> `;
+                hanziLine += chars[i];
             }
         }
-    }
+
+        result += `
+            <div class="segment" data-article-id="${segment.articleId}">
+                <div class="pinyin-line">${pinyinLine.trim()}</div>
+            </div>
+        `;
+    });
+
     articleContent.innerHTML = result;
+    console.log('Article content generated:', articleContent.innerHTML);
+
+    const segments = articleContent.querySelectorAll('.segment');
+    segments.forEach(segment => {
+        segment.addEventListener('click', () => {
+            const articleId = segment.getAttribute('data-article-id');
+            playSegment(articleId);
+        });
+    });
+}
+
+function playSegment(articleId) {
+    const segment = articleSegments.find(seg => seg.articleId === articleId);
+    if (!segment) {
+        console.error('Segment not found for articleId:', articleId);
+        return;
+    }
+
+    if (currentHighlightedSegment) {
+        currentHighlightedSegment.classList.remove('highlight');
+    }
+    const newHighlightedSegment = articleContent.querySelector(`.segment[data-article-id="${articleId}"]`);
+    newHighlightedSegment.classList.add('highlight');
+    currentHighlightedSegment = newHighlightedSegment;
+
+    segmentAudio.src = segment.audio;
+    segmentAudio.play().catch(error => console.error('Segment audio play failed:', error));
 }
 
 function exitArticleMode() {
+    fullAudio.pause();
+    fullAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     articleMode.style.display = 'none';
-    modeSelection.style.display = 'flex';
-    modeSelection.style.flexWrap = 'nowrap';
+    readingMode.style.display = 'none';
 }
 
+// 单字模式
 function startSingleWordMode() {
-    modeSelection.style.display = 'flex';
+    fullAudio.pause();
+    fullAudio.currentTime = 0;
+    wordAudio.pause();
+    wordAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     practiceMode.style.display = 'none';
     gameMode.style.display = 'none';
     articleMode.style.display = 'none';
     singleWordMode.style.display = 'block';
     showSingleWordList();
+    console.log('Single Word Mode started');
 }
 
 function showSingleWordList() {
+    let clickCountMap = new Map();
+
     singleWordList.innerHTML = allUniqueWords.map(word => `
         <div class="word-item" data-hanzi="${word.hanzi}">
             <span class="pinyin">${word.pinyin}</span>
@@ -207,36 +308,48 @@ function showSingleWordList() {
     singleAnimationGif.style.display = 'none';
     singleAnimationFallback.style.display = 'none';
     const wordItems = singleWordList.querySelectorAll('.word-item');
-    wordItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const hanzi = item.getAttribute('data-hanzi');
-            const word = allUniqueWords.find(w => w.hanzi === hanzi);
-            if (word) {
-                wordItems.forEach(i => i.classList.remove('highlight'));
-                item.classList.add('highlight');
-                singleHanzi.textContent = word.hanzi;
-                singlePinyin.textContent = `拼音: ${word.pinyin} (Pinyin: ${word.pinyin})`;
-                singleMeaning.innerHTML = `含义: ${word.meaningCn}<br>Meaning: ${word.meaningEn}`;
-                singleStrokes.textContent = `笔画数: ${word.strokeCount} (Stroke Count: ${word.strokeCount})`;
-                singleAnimationGif.src = word.animation;
-                singleAnimationGif.style.display = 'block';
-                singleAnimationFallback.style.display = 'none';
-                if (singleHanziWriter) {
-                    singleHanziWriter.setCharacter(word.hanzi);
-                } else {
-                    singleHanziWriter = HanziWriter.create('single-animation', word.hanzi, {
-                        width: window.innerWidth > 600 ? 150 : Math.min(150, window.innerWidth * 0.35),
-                        height: window.innerWidth > 600 ? 150 : Math.min(150, window.innerWidth * 0.35),
-                        padding: 5,
-                        showOutline: true,
-                        strokeAnimationSpeed: 1,
-                        strokeHighlightSpeed: 0.5,
-                        highlightColor: '#FF0000'
-                    });
-                }
+
+    const handleWordClick = (event) => {
+        const hanzi = event.currentTarget.getAttribute('data-hanzi');
+        const word = allUniqueWords.find(w => w.hanzi === hanzi);
+        let clickCount = clickCountMap.get(hanzi) || 0;
+        clickCount++;
+        clickCountMap.set(hanzi, clickCount);
+
+        if (word) {
+            wordItems.forEach(i => i.classList.remove('highlight'));
+            event.currentTarget.classList.add('highlight');
+            singleHanzi.textContent = word.hanzi;
+            singlePinyin.textContent = `拼音: ${word.pinyin} (Pinyin: ${word.pinyin})`;
+            singleMeaning.innerHTML = `含义: ${word.meaningCn}<br>Meaning: ${word.meaningEn}`;
+            singleStrokes.textContent = `笔画数: ${word.strokeCount} (Stroke Count: ${word.strokeCount})`;
+            singleAnimationGif.src = word.animation;
+            singleAnimationGif.style.display = 'block';
+            singleAnimationFallback.style.display = 'none';
+            wordAudio.src = word.audio;
+            wordAudio.play().catch(error => console.error('Word audio play failed:', error));
+            if (singleHanziWriter) {
+                singleHanziWriter.setCharacter(word.hanzi);
+            } else {
+                singleHanziWriter = HanziWriter.create('single-animation', word.hanzi, {
+                    width: window.innerWidth > 600 ? 150 : Math.min(150, window.innerWidth * 0.35),
+                    height: window.innerWidth > 600 ? 150 : Math.min(150, window.innerWidth * 0.35),
+                    padding: 5,
+                    showOutline: true,
+                    strokeAnimationSpeed: 1,
+                    strokeHighlightSpeed: 0.5,
+                    highlightColor: '#FF0000'
+                });
             }
-        });
-    });
+
+            if (clickCount === 2) {
+                event.currentTarget.removeEventListener('click', handleWordClick);
+                console.log(`移除全局点击监听器 for ${hanzi}`);
+            }
+        }
+    };
+
+    wordItems.forEach(item => item.addEventListener('click', handleWordClick));
 }
 
 function animateSingleStrokeOrder() {
@@ -244,20 +357,27 @@ function animateSingleStrokeOrder() {
 }
 
 function exitSingleWordMode() {
+    wordAudio.pause();
+    wordAudio.currentTime = 0;
     singleWordMode.style.display = 'none';
-    modeSelection.style.display = 'flex';
-    modeSelection.style.flexWrap = 'nowrap';
 }
 
+// 练习模式
+// 练习模式
 function startPracticeMode() {
+    fullAudio.pause();
+    fullAudio.currentTime = 0;
+    wordAudio.pause();
+    wordAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     practiceIndex = 0;
     practiceWords = shuffle([...allUniqueWords]);
-    modeSelection.style.display = 'flex';
     gameMode.style.display = 'none';
-    singleWordMode.style.display = 'none';
     articleMode.style.display = 'none';
+    singleWordMode.style.display = 'none';
     practiceMode.style.display = 'block';
-    showPracticeWord();
+    showPracticeWord(); // 初始显示第一个汉字
+    console.log('Practice Mode started');
 }
 
 function showPracticeWord() {
@@ -267,6 +387,25 @@ function showPracticeWord() {
     flashcardMeaning.innerHTML = `含义: ${word.meaningCn}<br>Meaning: ${word.meaningEn}`;
     isFlipped = false;
     flashcard.classList.remove('flipped');
+    wordAudio.src = word.audio;
+
+    // 绑定“播放发音”按钮的监听器
+    const playButton = document.querySelector('#practice-controls button:nth-child(1)');
+    let clickCount = 0;
+    const handlePlayClick = () => {
+        clickCount++;
+        if (wordAudio.src) {
+            wordAudio.play().catch(error => console.error('Word audio play failed:', error));
+            if (clickCount === 2) {
+                playButton.removeEventListener('click', handlePlayClick);
+                console.log(`移除全局点击监听器 for ${word.hanzi} audio`);
+            }
+        } else {
+            console.error('Word audio source not set');
+        }
+    };
+    playButton.removeEventListener('click', handlePlayClick); // 防止重复绑定
+    playButton.addEventListener('click', handlePlayClick);
 }
 
 function flipCard() {
@@ -284,24 +423,28 @@ function nextPracticeWord() {
 }
 
 function exitPracticeMode() {
+    wordAudio.pause();
+    wordAudio.currentTime = 0;
     practiceMode.style.display = 'none';
-    modeSelection.style.display = 'flex';
-    modeSelection.style.flexWrap = 'nowrap';
 }
 
+// 游戏模式
 function startGameMode() {
-    modeSelection.style.display = 'flex';
+    fullAudio.pause();
+    fullAudio.currentTime = 0;
+    wordAudio.pause();
+    wordAudio.currentTime = 0;
+    document.removeEventListener('click', stopFullAudioOnClick);
     practiceMode.style.display = 'none';
-    singleWordMode.style.display = 'none';
     articleMode.style.display = 'none';
+    singleWordMode.style.display = 'none';
     gameMode.style.display = 'block';
     setLevel(currentLevel, currentSubLevel);
+    console.log('Game Mode started');
 }
 
 function exitGameMode() {
     gameMode.style.display = 'none';
-    modeSelection.style.display = 'flex';
-    modeSelection.style.flexWrap = 'nowrap';
 }
 
 function updateScoreDisplay() {
@@ -325,7 +468,7 @@ function loadGame() {
         currentLevel = gameState.currentLevel;
         currentSubLevel = gameState.currentSubLevel;
         wrongWords = gameState.wrongWords;
-        level1WrongWords = gameState.level1WrongWords;
+        level1WrongWords = gameState.wrongWords;
         isFixingErrors = gameState.isFixingErrors;
         if (isFixingErrors) fixLevel1Errors();
         else setLevel(currentLevel, currentSubLevel);
@@ -411,15 +554,13 @@ function setLevel(level, subLevel) {
     hanziContainer.innerHTML = '';
     pinyinContainer.innerHTML = '';
 
-    // 多次洗牌以增强随机性
     let shuffledHanzi = [...words];
     let shuffledPinyin = [...words];
-    for (let i = 0; i < 3; i++) { // 洗牌 3 次
+    for (let i = 0; i < 3; i++) {
         shuffledHanzi = shuffle(shuffledHanzi);
         shuffledPinyin = shuffle(shuffledPinyin);
     }
 
-    // 随机插入汉字
     const hanziPositions = Array.from({ length: shuffledHanzi.length }, (_, i) => i);
     shuffle(hanziPositions);
     hanziPositions.forEach(pos => {
@@ -431,7 +572,6 @@ function setLevel(level, subLevel) {
         hanziContainer.appendChild(card);
     });
 
-    // 随机插入拼音
     const pinyinPositions = Array.from({ length: shuffledPinyin.length }, (_, i) => i);
     shuffle(pinyinPositions);
     pinyinPositions.forEach(pos => {
