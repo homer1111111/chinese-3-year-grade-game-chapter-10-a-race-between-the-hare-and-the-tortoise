@@ -440,11 +440,11 @@ button {
 /* 桌面端样式 */
 #article-content {
     margin: 20px 0;
-    white-space: normal; /* 移除 pre-wrap，允许换行 */
+    white-space: normal;
 }
 
 #article-content .pinyin-line {
-    font-size: clamp(20px, 4vw, 32px); /* 动态字体大小 */
+    font-size: clamp(20px, 4vw, 32px);
     color: #666;
     margin-bottom: 0;
     line-height: 1.2;
@@ -452,16 +452,17 @@ button {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5vw; /* 字符间距 */
+    gap: 0.5vw;
 }
 
 .char-pair {
-    display: inline-flex; /* 使用 flex 布局 */
+    display: inline-flex;
+    flex-direction: column; /* 垂直排列 */
     vertical-align: top;
-    margin-right: 0; /* 移除固定间距 */
+    margin-right: 0;
     margin-bottom: 0;
-    min-width: 0; /* 移除固定宽度 */
-    height: clamp(80px, 15vw, 150px); /* 动态高度 */
+    min-width: 0;
+    height: clamp(80px, 15vw, 150px);
     position: relative;
     text-align: center;
     align-items: center;
@@ -469,22 +470,14 @@ button {
 }
 
 .pinyin {
-    font-size: clamp(16px, 3vw, 32px); /* 动态字体大小 */
+    font-size: clamp(16px, 3vw, 32px);
     line-height: 1;
-    position: relative;
-    top: auto; /* 移除绝对定位 */
-    left: auto;
-    transform: none;
-    margin-bottom: 0.5vw; /* 拼音和汉字间距 */
+    margin-bottom: 0.5vw; /* 拼音和汉字之间的间距 */
 }
 
 .hanzi {
-    font-size: clamp(24px, 4.5vw, 48px); /* 动态字体大小 */
+    font-size: clamp(24px, 4.5vw, 48px);
     line-height: 1;
-    position: relative;
-    bottom: auto; /* 移除绝对定位 */
-    left: auto;
-    transform: none;
 }
 
 .segment {
@@ -653,6 +646,7 @@ div.segment.highlight {
     }
     .char-pair {
         display: inline-flex;
+        flex-direction: column; /* 垂直排列 */
         vertical-align: top;
         margin-right: 0;
         margin-bottom: 0;
@@ -666,19 +660,11 @@ div.segment.highlight {
     .pinyin {
         font-size: clamp(16px, 3vw, 32px);
         line-height: 1;
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
         margin-bottom: 0.5vw;
     }
     .hanzi {
         font-size: clamp(24px, 4.5vw, 48px);
         line-height: 1;
-        position: relative;
-        bottom: auto;
-        left: auto;
-        transform: none;
     }
     div.segment.highlight {
         font-size: 5px;
