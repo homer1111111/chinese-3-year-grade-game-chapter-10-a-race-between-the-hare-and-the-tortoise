@@ -193,6 +193,16 @@ function playSegment(articleId) {
         return;
     }
 
+    // 停止正在播放的全篇音频
+    if (!fullAudio.paused) {
+        fullAudio.pause();
+        fullAudio.currentTime = 0;
+        console.log('Full article audio stopped for segment play');
+    }
+
+    // 移除现有的全局点击监听器，避免冲突
+    document.removeEventListener('click', stopAudioOnClick);
+
     if (currentHighlightedSegment) {
         currentHighlightedSegment.classList.remove('highlight');
     }
