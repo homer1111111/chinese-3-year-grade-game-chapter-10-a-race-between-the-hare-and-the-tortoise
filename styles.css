@@ -437,6 +437,20 @@ button {
     font-size: 28px;
 }
 
+#play-article {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#play-article:hover {
+    background-color: #45a049;
+}
+
 /* 桌面端样式 */
 #article-content {
     margin: 20px 0;
@@ -456,28 +470,35 @@ button {
     vertical-align: top;
     margin-right: 8px;
     margin-bottom: 0;
-    width: 48px;
-    height: 120px; /* 增加高度以避免重叠 */
-    min-height: 80px; /* 确保最小高度 */
-    max-height: 150px; /* 防止过高 */
+    width: 48px; /* 默认宽度 */
+    height: 150px; /* 增加高度以避免重叠 */
+    min-height: 100px;
+    max-height: 180px;
     position: relative;
     text-align: center;
 }
 
+/* 为多字符词（如“会儿”）增加宽度 */
+.char-pair:has(.hanzi:where(:not(:empty))) {
+    width: auto; /* 动态宽度 */
+    min-width: 48px; /* 最小宽度 */
+    padding: 0 4px; /* 增加内边距 */
+}
+
 .pinyin {
-    font-size: 32px;
+    font-size: 28px; /* 减小字体 */
     line-height: 1;
     position: absolute;
-    top: 5px; /* 调整顶部间距 */
+    top: 5px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .hanzi {
-    font-size: 48px;
+    font-size: 40px; /* 减小字体 */
     line-height: 1;
     position: absolute;
-    bottom: 5px; /* 调整底部间距 */
+    bottom: 5px;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -647,25 +668,31 @@ div.segment.highlight {
         margin-right: 2vw;
         margin-bottom: 0;
         width: 10vw;
-        height: 30vw; /* 增加高度以避免重叠 */
-        min-height: 20vw; /* 确保最小高度 */
-        max-height: 40vw; /* 防止过高 */
+        height: 40vw; /* 增加高度以避免重叠 */
+        min-height: 30vw;
+        max-height: 50vw;
         position: relative;
         text-align: center;
     }
+    /* 为多字符词（如“会儿”）增加宽度 */
+    .char-pair:has(.hanzi:where(:not(:empty))) {
+        width: auto;
+        min-width: 10vw;
+        padding: 0 1vw;
+    }
     .pinyin {
-        font-size: 7vw;
+        font-size: 6vw; /* 减小字体 */
         line-height: 1;
         position: absolute;
-        top: 5px; /* 调整顶部间距 */
+        top: 5px;
         left: 50%;
         transform: translateX(-50%);
     }
     .hanzi {
-        font-size: 10vw;
+        font-size: 8vw; /* 减小字体 */
         line-height: 1;
         position: absolute;
-        bottom: 5px; /* 调整底部间距 */
+        bottom: 5px;
         left: 50%;
         transform: translateX(-50%);
     }
