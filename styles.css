@@ -332,7 +332,7 @@ button {
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #ffffff; /* 调整背景色为白色，确保对比度 */
+    background-color: #ffffff;
     position: static;
     color: #000;
     flex: 0 0 auto;
@@ -342,19 +342,23 @@ button {
 
 #single-word-list .pinyin {
     font-size: 20px;
-    color: #666 !important; /* 强制颜色 */
+    color: #666 !important;
     margin-bottom: 5px;
-    display: block; /* 确保显示 */
+    display: block;
     font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif;
-    line-height: 1; /* 防止行高导致偏移 */
+    position: relative; /* 移除绝对定位 */
+    width: auto; /* 确保宽度自适应 */
+    height: auto; /* 确保高度自适应 */
 }
 
 #single-word-list .hanzi {
     font-size: 30px;
-    color: #000 !important; /* 强制颜色 */
-    display: block; /* 确保显示 */
+    color: #000 !important;
+    display: block;
     font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif;
-    line-height: 1; /* 防止行高导致偏移 */
+    position: relative; /* 移除绝对定位 */
+    width: auto; /* 确保宽度自适应 */
+    height: auto; /* 确保高度自适应 */
 }
 
 #single-word-list .word-item:hover {
@@ -368,7 +372,7 @@ button {
 
 #single-word-list .word-item.highlight .pinyin,
 #single-word-list .word-item.highlight .hanzi {
-    color: #000 !important; /* 高亮时确保可见 */
+    color: #000 !important;
 }
 
 #single-word-display {
@@ -590,7 +594,7 @@ div.segment.highlight {
         padding: 3vw;
         min-width: 80px;
         min-height: 50px;
-        background-color: #ffffff; /* 确保对比度 */
+        background-color: #ffffff;
     }
     #single-word-list .pinyin {
         font-size: 4.5vw;
