@@ -165,25 +165,53 @@ function startArticleMode() {
 }
 
 function playFullArticle() {
-    if (fullAudio.paused) {
-        console.log('Attempting to play full article audio...');
-        fullAudio.src = 'audio/full_article.mp3';
-        fullAudio.load();
-        console.log('Full audio source set to:', fullAudio.src);
-        fullAudio.play()
-            .then(() => {
-                console.log('Full article audio playing successfully');
-                document.getElementById('play-article').textContent = '暂停课文 (Pause)';
-            })
-            .catch(error => {
-                console.error('Full audio play failed:', error);
-                alert('无法播放课文音频，请检查浏览器权限设置。\nError: ' + error.message);
-            });
-    } else {
+    console.log('Attempting to play full article audio...');
+    fullAudio.src = 'audio/full_article.mp3';
+    fullAudio.load();
+    console.log('Full audio source set to:', fullAudio.src);
+    fullAudio.play()
+        .then(() => {
+            console.log('Full article audio playing successfully');
+            document.addEventListener('click', stopAudioOnClick);
+        })
+        .catch(error => {
+            console.error('Full audio play failed:', error);
+            alert('无法播放课文音频，请检查浏览器权限设置或确认音频文件是否存在。\nError: ' + error.message);
+        });
+}
+
+function playSegment(articleId) {
+    const segment = articleSegments.find(seg => seg.articleId === articleId);
+    if (!segment) {
+        console.error('Segment not found for articleId:', articleId);
+        return;
+    }
+
+    if (currentHighlightedSegment) {
+        currentHighlightedSegment.classList.remove('highlight');
+    }
+    const newHighlightedSegment = articleContent.querySelector(`.segment[data-article-id="${articleId}"]`);
+    newHighlightedSegment.classList.add('highlight');
+    currentHighlightedSegment = newHighlightedSegment;
+
+    segmentAudio.src = segment.audio;
+    segmentAudio.play()
+        .then(() => {
+            console.log('Segment audio playing successfully');
+            document.addEventListener('click', stopAudioOnClick);
+        })
+        .catch(error => console.error('Segment audio play failed:', error));
+}
+
+function stopAudioOnClick(event) {
+    // 排除 #play-article 按钮和 .segment 元素
+    if (!event.target.closest('#play-article') && !event.target.closest('.segment')) {
         fullAudio.pause();
-        fullAudio.currentTime = 0; // 立即停止并重置
-        console.log('Full article audio stopped');
-        document.getElementById('play-article').textContent = '播放课文 (Play)';
+        fullAudio.currentTime = 0;
+        segmentAudio.pause();
+        segmentAudio.currentTime = 0;
+        console.log('Audio stopped by click');
+        document.removeEventListener('click', stopAudioOnClick);
     }
 }
 
@@ -200,7 +228,6 @@ function showArticleContent() {
         '大': 'dà', '会': 'huì'
     };
 
-    // 定义标点符号集合
     const punctuation = [',', '。', ':', '!', '"', '“', '”', ' ', '，'];
 
     let result = '';
@@ -219,7 +246,6 @@ function showArticleContent() {
                 hanziLine += '那儿';
                 i++;
             } else if (punctuation.includes(chars[i])) {
-                // 如果是标点符号，只添加到汉字行，不生成拼音
                 pinyinLine += `<span class="char-pair"><span class="pinyin"></span><span class="hanzi">${chars[i]}</span></span> `;
                 hanziLine += chars[i];
             } else {
@@ -248,27 +274,12 @@ function showArticleContent() {
     });
 }
 
-function playSegment(articleId) {
-    const segment = articleSegments.find(seg => seg.articleId === articleId);
-    if (!segment) {
-        console.error('Segment not found for articleId:', articleId);
-        return;
-    }
-
-    if (currentHighlightedSegment) {
-        currentHighlightedSegment.classList.remove('highlight');
-    }
-    const newHighlightedSegment = articleContent.querySelector(`.segment[data-article-id="${articleId}"]`);
-    newHighlightedSegment.classList.add('highlight');
-    currentHighlightedSegment = newHighlightedSegment;
-
-    segmentAudio.src = segment.audio;
-    segmentAudio.play().catch(error => console.error('Segment audio play failed:', error));
-}
-
 function exitArticleMode() {
     fullAudio.pause();
     fullAudio.currentTime = 0;
+    segmentAudio.pause();
+    segmentAudio.currentTime = 0;
+    document.removeEventListener('click', stopAudioOnClick);
     articleMode.style.display = 'none';
     readingMode.style.display = 'none';
 }
@@ -277,6 +288,9 @@ function exitArticleMode() {
 function startSingleWordMode() {
     fullAudio.pause();
     fullAudio.currentTime = 0;
+    segmentAudio.pause();
+    segmentAudio.currentTime = 0;
+    document.removeEventListener('click', stopAudioOnClick);
     wordAudio.pause();
     wordAudio.currentTime = 0;
     practiceMode.style.display = 'none';
@@ -361,6 +375,9 @@ function exitSingleWordMode() {
 function startPracticeMode() {
     fullAudio.pause();
     fullAudio.currentTime = 0;
+    segmentAudio.pause();
+    segmentAudio.currentTime = 0;
+    document.removeEventListener('click', stopAudioOnClick);
     wordAudio.pause();
     wordAudio.currentTime = 0;
     practiceIndex = 0;
@@ -382,7 +399,6 @@ function showPracticeWord() {
     flashcard.classList.remove('flipped');
     wordAudio.src = word.audio;
 
-    // 绑定“播放发音”按钮的监听器
     const playButton = document.querySelector('#practice-controls button:nth-child(1)');
     let clickCount = 0;
     const handlePlayClick = () => {
@@ -397,7 +413,7 @@ function showPracticeWord() {
             console.error('Word audio source not set');
         }
     };
-    playButton.removeEventListener('click', handlePlayClick); // 防止重复绑定
+    playButton.removeEventListener('click', handlePlayClick);
     playButton.addEventListener('click', handlePlayClick);
 }
 
@@ -425,6 +441,9 @@ function exitPracticeMode() {
 function startGameMode() {
     fullAudio.pause();
     fullAudio.currentTime = 0;
+    segmentAudio.pause();
+    segmentAudio.currentTime = 0;
+    document.removeEventListener('click', stopAudioOnClick);
     wordAudio.pause();
     wordAudio.currentTime = 0;
     practiceMode.style.display = 'none';
