@@ -193,14 +193,14 @@ function playSegment(articleId) {
         return;
     }
 
-    // 停止正在播放的全篇音频
+    // 同步停止全篇音频
     if (!fullAudio.paused) {
         fullAudio.pause();
         fullAudio.currentTime = 0;
         console.log('Full article audio stopped for segment play');
     }
 
-    // 移除现有的全局点击监听器，避免冲突
+    // 移除现有的全局点击监听器
     document.removeEventListener('click', stopAudioOnClick);
 
     if (currentHighlightedSegment) {
@@ -211,6 +211,7 @@ function playSegment(articleId) {
     currentHighlightedSegment = newHighlightedSegment;
 
     segmentAudio.src = segment.audio;
+    segmentAudio.load(); // 确保音频加载
     segmentAudio.play()
         .then(() => {
             console.log('Segment audio playing successfully');
@@ -221,7 +222,15 @@ function playSegment(articleId) {
                 }
             }, 500); // 延迟 500ms 绑定监听器
         })
-        .catch(error => console.error('Segment audio play failed:', error));
+        .catch(error => {
+            console.error('Segment audio play failed:', error);
+            if (error.message.includes('interrupted by a call to pause')) {
+                console.warn('Playback interrupted, retrying...');
+                segmentAudio.play(); // 尝试再次播放
+            } else {
+                alert('无法播放分段音频，请检查音频文件或网络连接。\nError: ' + error.message);
+            }
+        });
 }
 
 function stopAudioOnClick(event) {
