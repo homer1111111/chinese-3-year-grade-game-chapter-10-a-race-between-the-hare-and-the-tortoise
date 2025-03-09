@@ -339,7 +339,7 @@ button {
 #single-word-list .pinyin {
     font-size: 20px;
     color: #666 !important;
-    margin-bottom: 1.5vw; /* 统一设置为 1.5vw */
+    margin-bottom: 1.5vw;
     display: block;
     visibility: visible !important;
     opacity: 1 !important;
@@ -440,50 +440,55 @@ button {
 /* 桌面端样式 */
 #article-content {
     margin: 20px 0;
-    white-space: pre-wrap;
+    white-space: normal; /* 移除 pre-wrap，允许换行 */
 }
 
 #article-content .pinyin-line {
-    font-size: 32px;
+    font-size: clamp(20px, 4vw, 32px); /* 动态字体大小 */
     color: #666;
     margin-bottom: 0;
-    line-height: 1;
+    line-height: 1.2;
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5vw; /* 字符间距 */
 }
 
 .char-pair {
-    display: inline-block;
+    display: inline-flex; /* 使用 flex 布局 */
     vertical-align: top;
-    margin-right: 8px;
+    margin-right: 0; /* 移除固定间距 */
     margin-bottom: 0;
-    width: 48px;
-    height: 120px; /* 增加高度以避免重叠 */
-    min-height: 80px; /* 确保最小高度 */
-    max-height: 150px; /* 防止过高 */
+    min-width: 0; /* 移除固定宽度 */
+    height: clamp(80px, 15vw, 150px); /* 动态高度 */
     position: relative;
     text-align: center;
+    align-items: center;
+    justify-content: center;
 }
 
 .pinyin {
-    font-size: 32px;
+    font-size: clamp(16px, 3vw, 32px); /* 动态字体大小 */
     line-height: 1;
-    position: absolute;
-    top: 5px; /* 调整顶部间距 */
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    top: auto; /* 移除绝对定位 */
+    left: auto;
+    transform: none;
+    margin-bottom: 0.5vw; /* 拼音和汉字间距 */
 }
 
 .hanzi {
-    font-size: 48px;
+    font-size: clamp(24px, 4.5vw, 48px); /* 动态字体大小 */
     line-height: 1;
-    position: absolute;
-    bottom: 5px; /* 调整底部间距 */
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    bottom: auto; /* 移除绝对定位 */
+    left: auto;
+    transform: none;
 }
 
 .segment {
-    margin-bottom: 0;
+    margin-bottom: 1vh;
     font-size: 0px;
 }
 
@@ -603,7 +608,7 @@ div.segment.highlight {
     #single-word-list .pinyin {
         font-size: 4.5vw;
         color: #666 !important;
-        margin-bottom: 2.5vw; /* 统一设置为 2.5vw */
+        margin-bottom: 1.5vw;
         display: block;
         visibility: visible !important;
         opacity: 1 !important;
@@ -637,38 +642,43 @@ div.segment.highlight {
         white-space: normal;
     }
     #article-content .pinyin-line {
-        font-size: 7vw;
+        font-size: clamp(20px, 4vw, 32px);
         margin-bottom: 0;
-        line-height: 1;
+        line-height: 1.2;
         position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5vw;
     }
     .char-pair {
-        display: inline-block;
+        display: inline-flex;
         vertical-align: top;
-        margin-right: 2vw;
+        margin-right: 0;
         margin-bottom: 0;
-        width: 10vw;
-        height: 30vw; /* 增加高度以避免重叠 */
-        min-height: 20vw; /* 确保最小高度 */
-        max-height: 40vw; /* 防止过高 */
+        min-width: 0;
+        height: clamp(80px, 15vw, 150px);
         position: relative;
         text-align: center;
+        align-items: center;
+        justify-content: center;
     }
     .pinyin {
-        font-size: 7vw;
+        font-size: clamp(16px, 3vw, 32px);
         line-height: 1;
-        position: absolute;
-        top: 5px; /* 调整顶部间距 */
-        left: 50%;
-        transform: translateX(-50%);
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin-bottom: 0.5vw;
     }
     .hanzi {
-        font-size: 10vw;
+        font-size: clamp(24px, 4.5vw, 48px);
         line-height: 1;
-        position: absolute;
-        bottom: 5px; /* 调整底部间距 */
-        left: 50%;
-        transform: translateX(-50%);
+        position: relative;
+        bottom: auto;
+        left: auto;
+        transform: none;
     }
     div.segment.highlight {
         font-size: 5px;
