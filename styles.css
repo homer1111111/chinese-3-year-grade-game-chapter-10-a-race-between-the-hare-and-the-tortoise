@@ -1,5 +1,5 @@
 body {
-    font-family: 'Noto Sans SC', Arial, sans-serif; /* 添加支持中文的字体 */
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 添加后备字体 */
     text-align: center;
     margin: 0;
     padding: 2vh 2vw;
@@ -10,7 +10,7 @@ h1 {
     font-size: 36px;
     margin-bottom: 20px;
     position: relative;
-    z-index: 10; /* 确保标题在最上层 */
+    z-index: 10;
 }
 
 p {
@@ -26,7 +26,7 @@ p {
     flex-wrap: nowrap;
     align-items: center;
     position: relative;
-    z-index: 9; /* 模式选择栏在标题之下，但在内容之上 */
+    z-index: 9;
 }
 
 #mode-selection button {
@@ -295,7 +295,8 @@ button {
 #single-word-mode {
     position: relative;
     display: none;
-    margin-top: 20px; /* 与标题保持间距 */
+    margin-top: 40px;
+    padding: 20px 0;
 }
 
 #single-word-mode.active {
@@ -312,34 +313,43 @@ button {
 
 #single-word-list {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* 强制换行 */
     justify-content: center;
     gap: 15px;
     margin: 20px 0;
-    position: relative; /* 确保子元素在此容器内定位 */
+    position: relative;
+    min-height: 100px;
+    overflow: visible;
+    width: 100%; /* 确保占用全部宽度 */
 }
 
 #single-word-list .word-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center; /* 确保内容居中 */
     cursor: pointer;
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
-    position: static; /* 避免脱离文档流 */
-    color: #000; /* 明确指定字体颜色 */
+    position: static;
+    color: #000;
+    flex: 0 0 auto;
+    min-width: 100px; /* 确保有足够宽度 */
+    min-height: 60px; /* 确保有足够高度 */
 }
 
 #single-word-list .pinyin {
     font-size: 20px;
     color: #666;
     margin-bottom: 5px;
+    display: inline-block; /* 确保显示 */
 }
 
 #single-word-list .hanzi {
     font-size: 30px;
+    display: inline-block; /* 确保显示 */
 }
 
 #single-word-list .word-item:hover {
@@ -351,6 +361,16 @@ button {
     border-color: #FF9800;
 }
 
+#single-word-list .word-item.highlight .pinyin,
+#single-word-list .word-item.highlight .hanzi {
+    color: #000; /* 确保高亮时内容可见 */
+}
+
+#single-word-display {
+    margin: 20px 0;
+    padding: 10px;
+}
+
 #single-word-display h3 {
     font-size: 48px;
     margin: 20px 0;
@@ -358,6 +378,7 @@ button {
 
 #single-word-display p {
     font-size: 18px;
+    margin: 10px 0;
 }
 
 #single-animation-gif {
@@ -383,6 +404,7 @@ button {
 #single-word-mode button {
     background-color: #FF5722;
     color: white;
+    margin: 10px;
 }
 
 #single-word-mode button:hover {
@@ -555,10 +577,14 @@ div.segment.highlight {
         font-size: 4vw;
     }
     #single-word-list {
-        gap: 2vw;
+        gap: 5vw; /* 增加间距 */
+        min-height: 50vw;
+        flex-wrap: wrap !important; /* 强制换行 */
     }
     #single-word-list .word-item {
         padding: 3vw;
+        min-width: 80px; /* 确保有足够宽度 */
+        min-height: 50px; /* 确保有足够高度 */
     }
     #single-word-list .pinyin {
         font-size: 4.5vw;
