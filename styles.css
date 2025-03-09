@@ -1,5 +1,5 @@
 body {
-    font-family: 'Noto Sans SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 添加后备字体 */
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 添加更多后备字体 */
     text-align: center;
     margin: 0;
     padding: 2vh 2vw;
@@ -313,21 +313,21 @@ button {
 
 #single-word-list {
     display: flex;
-    flex-wrap: wrap; /* 强制换行 */
+    flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
     margin: 20px 0;
     position: relative;
     min-height: 100px;
     overflow: visible;
-    width: 100%; /* 确保占用全部宽度 */
+    width: 100%;
 }
 
 #single-word-list .word-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* 确保内容居中 */
+    justify-content: center;
     cursor: pointer;
     padding: 15px;
     border: 1px solid #ccc;
@@ -336,20 +336,23 @@ button {
     position: static;
     color: #000;
     flex: 0 0 auto;
-    min-width: 100px; /* 确保有足够宽度 */
-    min-height: 60px; /* 确保有足够高度 */
+    min-width: 100px;
+    min-height: 60px;
 }
 
 #single-word-list .pinyin {
     font-size: 20px;
     color: #666;
     margin-bottom: 5px;
-    display: inline-block; /* 确保显示 */
+    display: inline-block;
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 确保字体 */
 }
 
 #single-word-list .hanzi {
     font-size: 30px;
-    display: inline-block; /* 确保显示 */
+    display: inline-block;
+    color: #000 !important; /* 强制颜色，确保可见 */
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'SimSun', Arial, sans-serif; /* 确保字体 */
 }
 
 #single-word-list .word-item:hover {
@@ -363,7 +366,7 @@ button {
 
 #single-word-list .word-item.highlight .pinyin,
 #single-word-list .word-item.highlight .hanzi {
-    color: #000; /* 确保高亮时内容可见 */
+    color: #000 !important; /* 高亮时确保可见 */
 }
 
 #single-word-display {
@@ -577,20 +580,21 @@ div.segment.highlight {
         font-size: 4vw;
     }
     #single-word-list {
-        gap: 5vw; /* 增加间距 */
+        gap: 5vw;
         min-height: 50vw;
-        flex-wrap: wrap !important; /* 强制换行 */
+        flex-wrap: wrap !important;
     }
     #single-word-list .word-item {
         padding: 3vw;
-        min-width: 80px; /* 确保有足够宽度 */
-        min-height: 50px; /* 确保有足够高度 */
+        min-width: 80px;
+        min-height: 50px;
     }
     #single-word-list .pinyin {
         font-size: 4.5vw;
     }
     #single-word-list .hanzi {
         font-size: 6vw;
+        color: #000 !important; /* 强制颜色 */
     }
     #single-word-display h3 {
         font-size: 8vw;
