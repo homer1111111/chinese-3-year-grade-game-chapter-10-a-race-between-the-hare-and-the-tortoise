@@ -156,6 +156,7 @@ function shuffle(array) {
 
 // 课文模式
 function startArticleMode() {
+    console.log('Starting Article Mode');
     // 清除其他模式的内容
     practiceMode.style.display = 'none';
     gameMode.style.display = 'none';
@@ -163,7 +164,6 @@ function startArticleMode() {
     articleMode.style.display = 'block';
     readingMode.style.display = 'block';
     showArticleContent();
-    console.log('Article Mode started');
 }
 
 function playFullArticle() {
@@ -320,6 +320,7 @@ function exitArticleMode() {
 
 // 单字模式
 function startSingleWordMode() {
+    console.log('Starting Single Word Mode');
     fullAudio.pause();
     fullAudio.currentTime = 0;
     segmentAudio.pause();
@@ -332,10 +333,10 @@ function startSingleWordMode() {
     articleMode.style.display = 'none';
     singleWordMode.style.display = 'block';
     showSingleWordList();
-    console.log('Single Word Mode started');
 }
 
 function showSingleWordList() {
+    console.log('Rendering Single Word List');
     let clickCountMap = new Map();
 
     singleWordList.innerHTML = allUniqueWords.map(word => `
@@ -407,6 +408,7 @@ function exitSingleWordMode() {
 
 // 练习模式
 function startPracticeMode() {
+    console.log('Starting Practice Mode');
     fullAudio.pause();
     fullAudio.currentTime = 0;
     segmentAudio.pause();
@@ -421,10 +423,10 @@ function startPracticeMode() {
     singleWordMode.style.display = 'none';
     practiceMode.style.display = 'block';
     showPracticeWord();
-    console.log('Practice Mode started');
 }
 
 function showPracticeWord() {
+    console.log('Rendering Practice Word');
     const word = practiceWords[practiceIndex];
     flashcardHanzi.textContent = word.hanzi;
     flashcardPinyin.textContent = `拼音: ${word.pinyin} (Pinyin: ${word.pinyin})`;
@@ -473,6 +475,7 @@ function exitPracticeMode() {
 
 // 游戏模式
 function startGameMode() {
+    console.log('Starting Game Mode');
     fullAudio.pause();
     fullAudio.currentTime = 0;
     segmentAudio.pause();
@@ -485,7 +488,6 @@ function startGameMode() {
     singleWordMode.style.display = 'none';
     gameMode.style.display = 'block';
     setLevel(currentLevel, currentSubLevel);
-    console.log('Game Mode started');
 }
 
 function exitGameMode() {
@@ -578,6 +580,7 @@ function fixLevel1Errors() {
 }
 
 function setLevel(level, subLevel) {
+    console.log(`Setting Level ${level}-${subLevel} for Game Mode`);
     currentLevel = level;
     currentSubLevel = subLevel;
     levelDisplay.textContent = currentLevel === 3 ? 
@@ -792,16 +795,24 @@ document.addEventListener('DOMContentLoaded', function() {
     articleMode.style.display = 'none';
     readingMode.style.display = 'none';
 
-    // 绑定按钮点击事件
-    const articleButton = document.querySelector('#mode-selection button:nth-child(1)');
-    const practiceButton = document.querySelector('#mode-selection button:nth-child(2)');
-    const gameButton = document.querySelector('#mode-selection button:nth-child(3)');
-    const singleWordButton = document.querySelector('#mode-selection button:nth-child(4)');
-
-    articleButton.addEventListener('click', startArticleMode);
-    practiceButton.addEventListener('click', startPracticeMode);
-    gameButton.addEventListener('click', startGameMode);
-    singleWordButton.addEventListener('click', startSingleWordMode);
+    // 绑定按钮点击事件（假设按钮顺序为：课文、练习、游戏、单字）
+    const buttons = modeSelection.querySelectorAll('button');
+    buttons.forEach((button, index) => {
+        switch (index) {
+            case 0: // 课文模式
+                button.addEventListener('click', startArticleMode);
+                break;
+            case 1: // 练习模式
+                button.addEventListener('click', startPracticeMode);
+                break;
+            case 2: // 游戏模式
+                button.addEventListener('click', startGameMode);
+                break;
+            case 3: // 单字模式
+                button.addEventListener('click', startSingleWordMode);
+                break;
+        }
+    });
 
     // 初始化单字模式列表（仅生成 DOM，不显示）
     showSingleWordList();
