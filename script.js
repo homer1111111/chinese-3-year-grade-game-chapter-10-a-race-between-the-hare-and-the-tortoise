@@ -156,6 +156,7 @@ function shuffle(array) {
 
 // 课文模式
 function startArticleMode() {
+    // 清除其他模式的内容
     practiceMode.style.display = 'none';
     gameMode.style.display = 'none';
     singleWordMode.style.display = 'none';
@@ -314,6 +315,7 @@ function exitArticleMode() {
     document.removeEventListener('click', stopAudioOnClick);
     articleMode.style.display = 'none';
     readingMode.style.display = 'none';
+    articleContent.innerHTML = ''; // 清除课文内容
 }
 
 // 单字模式
@@ -781,7 +783,26 @@ function handleLevelComplete() {
     }
 }
 
+// 绑定模式选择按钮事件
 document.addEventListener('DOMContentLoaded', function() {
-    startArticleMode();
+    // 默认隐藏所有模式，只显示模式选择
+    practiceMode.style.display = 'none';
+    gameMode.style.display = 'none';
+    singleWordMode.style.display = 'none';
+    articleMode.style.display = 'none';
+    readingMode.style.display = 'none';
+
+    // 绑定按钮点击事件
+    const articleButton = document.querySelector('#mode-selection button:nth-child(1)');
+    const practiceButton = document.querySelector('#mode-selection button:nth-child(2)');
+    const gameButton = document.querySelector('#mode-selection button:nth-child(3)');
+    const singleWordButton = document.querySelector('#mode-selection button:nth-child(4)');
+
+    articleButton.addEventListener('click', startArticleMode);
+    practiceButton.addEventListener('click', startPracticeMode);
+    gameButton.addEventListener('click', startGameMode);
+    singleWordButton.addEventListener('click', startSingleWordMode);
+
+    // 初始化单字模式列表（仅生成 DOM，不显示）
     showSingleWordList();
 });
