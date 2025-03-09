@@ -9,7 +9,7 @@
 </head>
 <body>
     <h1>第十课 - 龟兔赛跑 (Chapter 10: A Race Between the Hare and the Tortoise)</h1>
-    <div id="mode-selection">
+    <div id="mode-selection" class="persistent">
         <button onclick="startArticleMode()">课文模式 (Article Mode)</button>
         <button onclick="startSingleWordMode()">单字模式 (Single Word Mode)</button>
         <button onclick="startPracticeMode()">练习模式 (Practice Mode)</button>
@@ -17,8 +17,16 @@
     </div>
     <div id="article-mode" style="display: none;">
         <h2>课文模式 (Article Mode)</h2>
-        <div id="article-content"></div>
-        <button onclick="exitArticleMode()">返回 (Back)</button>
+        <div id="reading-mode" style="display: none;">
+            <button onclick="playFullArticle()">播放课文 (Play Article)</button>
+            <audio id="full-audio" style="display: none;" preload="auto">
+                <source src="audio/full_article.mp3" type="audio/mp3">
+                您的浏览器不支持音频播放。
+            </audio>
+            <div id="article-content"></div>
+            <audio id="segment-audio" style="display: none;" preload="auto"></audio>
+            <button onclick="exitArticleMode()">返回 (Back)</button>
+        </div>
     </div>
     <div id="single-word-mode" style="display: none;">
         <h2>单字模式 (Single Word Mode)</h2>
@@ -49,8 +57,11 @@
                 <p id="flashcard-meaning"></p>
             </div>
         </div>
-        <button onclick="nextPracticeWord()">下一个 (Next)</button>
-        <button onclick="exitPracticeMode()">返回 (Back)</button>
+        <div id="practice-controls">
+            <button>播放发音 (Play Pronunciation)</button>
+            <button onclick="nextPracticeWord()">下一个 (Next)</button>
+            <button onclick="exitPracticeMode()">返回 (Back)</button>
+        </div>
     </div>
     <div id="game-mode" style="display: none;">
         <h2>游戏模式 (Game Mode)</h2>
@@ -90,7 +101,8 @@
             <button onclick="done()">完成 (Done)</button>
         </div>
     </div>
-    <audio id="celebrate-sound" src="https://freesound.org/data/previews/159/159402_1676144-lq.mp3"></audio>
+    <audio id="celebrate-sound" src="https://freesound.org/data/previews/159/159402_1676144-lq.mp3" preload="auto"></audio>
+    <audio id="word-audio" style="display: none;" preload="auto"></audio>
     <script src="script.js"></script>
 </body>
 </html>
